@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Stack Animation</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    padding: 25px;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.canvas-container {
+    width: 100%;
+    margin: 25px 0;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    background-color: #fafafa;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+canvas {
+    display: block;
+}
+
+.controls {
+    margin: 25px 0;
+}
+
+.input-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    flex-grow: 1;
+    font-size: 16px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.15s, background-color 0.3s;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+#pushBtn {
+    background-color: #2ecc71;
+}
+
+#pushBtn:hover {
+    background-color: #24a75a;
+}
+
+#popBtn {
+    background-color: #e74c3c;
+}
+
+#popBtn:hover {
+    background-color: #c0392b;
+}
+
+#peekBtn {
+    background-color: #3498db;
+}
+
+#peekBtn:hover {
+    background-color: #2980b9;
+}
+
+#clearBtn {
+    background-color: #f39c12;
+}
+
+#clearBtn:hover {
+    background-color: #d35400;
+}
+
+.info {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.status {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #2c3e50;
+    font-weight: 600;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.message {
+    font-size: 16px;
+    color: #e74c3c;
+    min-height: 24px;
+    font-weight: 500;
+    transition: opacity 0.3s;
+}
+
+.explanation {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #eee;
+}
+
+.explanation h2 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.explanation p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #444;
+}
+
+.explanation h3 {
+    margin: 20px 0 15px;
+    color: #2c3e50;
+}
+
+.explanation ul {
+    list-style-type: circle;
+    padding-left: 25px;
+}
+
+.explanation li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .input-group {
+        flex-direction: column;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Stack Implementation Using Array</h1>
+        
+        <div class="canvas-container">
+            <canvas id="stackCanvas" width="700" height="300"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="elementInput" placeholder="Enter a value">
+                <button id="pushBtn">Push</button>
+                <button id="popBtn">Pop</button>
+                <button id="peekBtn">Peek</button>
+                <button id="clearBtn">Clear Stack</button>
+            </div>
+        </div>
+        
+        <div class="info">
+            <div class="status" id="status">Stack is empty. Top = -1</div>
+            <div class="message" id="message"></div>
+        </div>
+        
+        <div class="explanation">
+            <h2>About Stack Data Structure</h2>
+            <p>A stack is a linear data structure that follows the Last In First Out (LIFO) principle. The element that is added last is the first one to be removed.</p>
+            <p>In this implementation, we use an array to store the stack elements and a "top" pointer to keep track of the index of the topmost element.</p>
+            <h3>Operations:</h3>
+            <ul>
+                <li><strong>Push</strong>: Add an element to the top of the stack</li>
+                <li><strong>Pop</strong>: Remove the element from the top of the stack</li>
+                <li><strong>Peek</strong>: View the element at the top without removing it</li>
+            </ul>
+        </div>
+    </div>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Get canvas and container
+    const canvas = document.getElementById('stackCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasContainer = document.querySelector('.canvas-container');
+    
+    // Set high resolution canvas
+    function setupHighResolutionCanvas() {
+        // Get the device pixel ratio
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Get the container's size
+        const rect = canvasContainer.getBoundingClientRect();
+        const displayWidth = rect.width;
+        const displayHeight = 300; // Keep the height as 300
+        
+        // Set the canvas size in CSS pixels
+        canvas.style.width = displayWidth + 'px';
+        canvas.style.height = displayHeight + 'px';
+        
+        // Set the canvas size in actual pixels (higher resolution)
+        canvas.width = Math.floor(displayWidth * dpr);
+        canvas.height = Math.floor(displayHeight * dpr);
+        
+        // Scale the context to ensure correct drawing operations
+        ctx.scale(dpr, dpr);
+        
+        // Enable image smoothing for text and shapes
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+    }
+    
+    // Call the setup function
+    setupHighResolutionCanvas();
+    
+    // Get DOM elements
+    const elementInput = document.getElementById('elementInput');
+    const pushBtn = document.getElementById('pushBtn');
+    const popBtn = document.getElementById('popBtn');
+    const peekBtn = document.getElementById('peekBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusEl = document.getElementById('status');
+    const messageEl = document.getElementById('message');
+    
+    // Calculate dimensions based on canvas size
+    const canvasWidth = parseInt(canvas.style.width);
+    
+    // Stack configuration
+    const stackConfig = {
+        maxSize: 8,
+        cellWidth: Math.min(60, (canvasWidth - 160) / 8), // Adjust cell width based on canvas size
+        cellHeight: 60,
+        startX: 80,
+        startY: parseInt(canvas.style.height) / 2 - 30,
+        animationSpeed: 15,
+    };
+    
+    // Stack implementation
+    const stack = {
+        array: Array(stackConfig.maxSize).fill(null),
+        top: -1,
+        
+        isEmpty: function() {
+            return this.top === -1;
+        },
+        
+        isFull: function() {
+            return this.top === stackConfig.maxSize - 1;
+        },
+        
+        push: function(value) {
+            if (this.isFull()) {
+                return false;
+            }
+            this.top++;
+            this.array[this.top] = value;
+            return true;
+        },
+        
+        pop: function() {
+            if (this.isEmpty()) {
+                return null;
+            }
+            const value = this.array[this.top];
+            this.array[this.top] = null;
+            this.top--;
+            return value;
+        },
+        
+        peek: function() {
+            if (this.isEmpty()) {
+                return null;
+            }
+            return this.array[this.top];
+        },
+        
+        clear: function() {
+            this.array = Array(stackConfig.maxSize).fill(null);
+            this.top = -1;
+        }
+    };
+    
+    // Animation variables
+    let isAnimating = false;
+    let animationObj = null;
+    
+    // Initial render
+    draw();
+    updateStatus();
+    
+    // Handle window resize to maintain high resolution
+    window.addEventListener('resize', function() {
+        setupHighResolutionCanvas();
+        draw();
+    });
+    
+    // Event Listeners
+    pushBtn.addEventListener('click', handlePush);
+    popBtn.addEventListener('click', handlePop);
+    peekBtn.addEventListener('click', handlePeek);
+    clearBtn.addEventListener('click', handleClear);
+    elementInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handlePush();
+        }
+    });
+    
+    // Handle push operation
+    function handlePush() {
+        if (isAnimating) return;
+        
+        clearMessage();
+        const value = elementInput.value.trim();
+        
+        if (!value) {
+            showMessage("Please enter a value to push");
+            return;
+        }
+        
+        if (stack.isFull()) {
+            showMessage("Stack Overflow! Cannot push more elements.");
+            return;
+        }
+        
+        // Update the stack data structure immediately
+        stack.push(value);
+        
+        // Create animation for push
+        const targetIndex = stack.top;
+        const startX = stackConfig.startX + targetIndex * stackConfig.cellWidth;
+        const startY = stackConfig.startY - 70;
+        
+        isAnimating = true;
+        animationObj = {
+            type: 'push',
+            value: value,
+            x: startX,
+            y: startY,
+            targetY: stackConfig.startY,
+            index: targetIndex,
+            progress: 0,
+            completed: false
+        };
+        
+        // Start animation
+        requestAnimationFrame(animate);
+        
+        // Clear input after push
+        elementInput.value = '';
+        updateStatus();
+    }
+    
+    // Handle pop operation
+    function handlePop() {
+        if (isAnimating) return;
+        
+        clearMessage();
+        
+        if (stack.isEmpty()) {
+            showMessage("Stack Underflow! Cannot pop from an empty stack.");
+            return;
+        }
+        
+        // Get value before popping
+        const value = stack.array[stack.top];
+        const index = stack.top;
+        const startX = stackConfig.startX + index * stackConfig.cellWidth;
+        
+        // Create animation for pop
+        isAnimating = true;
+        animationObj = {
+            type: 'pop',
+            value: value,
+            x: startX,
+            y: stackConfig.startY,
+            targetY: stackConfig.startY - 70,
+            index: index,
+            progress: 0,
+            completed: false
+        };
+        
+        // Start animation
+        requestAnimationFrame(animate);
+        
+        // Remove from stack after animation starts
+        const popped = stack.pop();
+        updateStatus();
+        
+        // Show message after animation completes
+        setTimeout(() => {
+            showMessage(`Popped value: ${popped}`);
+        }, 500);
+    }
+    
+    // Handle peek operation
+    function handlePeek() {
+        clearMessage();
+        
+        if (stack.isEmpty()) {
+            showMessage("Stack is empty. Cannot peek.");
+            return;
+        }
+        
+        const value = stack.peek();
+        showMessage(`Top value: ${value}`);
+        
+        // Highlight the top element
+        const topX = stackConfig.startX + stack.top * stackConfig.cellWidth;
+        
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
+        ctx.fillRect(
+            topX, 
+            stackConfig.startY, 
+            stackConfig.cellWidth, 
+            stackConfig.cellHeight
+        );
+        ctx.restore();
+        
+        // Remove highlight after a delay
+        setTimeout(() => {
+            draw();
+            clearMessage();
+        }, 1500);
+    }
+    
+    // Handle clear operation
+    function handleClear() {
+        if (isAnimating) return;
+        
+        clearMessage();
+        
+        if (stack.isEmpty()) {
+            showMessage("Stack is already empty.");
+            return;
+        }
+        
+        // Create fade-out animation for all elements
+        isAnimating = true;
+        animationObj = {
+            type: 'clear',
+            progress: 0,
+            completed: false
+        };
+        
+        // Start animation
+        requestAnimationFrame(animate);
+        
+        // Clear stack data immediately
+        stack.clear();
+        updateStatus();
+    }
+    
+    // Animation function
+    function animate() {
+        if (!animationObj) return;
+        
+        // Increment progress
+        animationObj.progress += 0.05;
+        
+        // Draw the current state
+        draw();
+        
+        // Handle animation completion
+        if (animationObj.progress >= 1) {
+            if (!animationObj.completed) {
+                animationObj.completed = true;
+                // Final draw to ensure the completed state is shown
+                draw();
+                // Reset animation state
+                setTimeout(() => {
+                    animationObj = null;
+                    isAnimating = false;
+                }, 100);
+            }
+            return;
+        }
+        
+        if (animationObj.type === 'push') {
+            // Animate element coming in
+            const currentY = animationObj.y + (animationObj.targetY - animationObj.y) * animationObj.progress;
+            
+            ctx.save();
+            ctx.fillStyle = '#2ecc71';
+            ctx.fillRect(animationObj.x, currentY, stackConfig.cellWidth, stackConfig.cellHeight);
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(animationObj.x, currentY, stackConfig.cellWidth, stackConfig.cellHeight);
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '16px Arial';
+            ctx.fillText(
+                animationObj.value, 
+                animationObj.x + stackConfig.cellWidth/2, 
+                currentY + stackConfig.cellHeight/2
+            );
+            ctx.restore();
+        } else if (animationObj.type === 'pop') {
+            // Animate element going out
+            const currentY = animationObj.y + (animationObj.targetY - animationObj.y) * animationObj.progress;
+            
+            ctx.save();
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(animationObj.x, currentY, stackConfig.cellWidth, stackConfig.cellHeight);
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(animationObj.x, currentY, stackConfig.cellWidth, stackConfig.cellHeight);
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '16px Arial';
+            ctx.fillText(
+                animationObj.value, 
+                animationObj.x + stackConfig.cellWidth/2, 
+                currentY + stackConfig.cellHeight/2
+            );
+            ctx.restore();
+        } else if (animationObj.type === 'clear') {
+            // Fade out all elements
+            ctx.save();
+            ctx.globalAlpha = 1 - animationObj.progress;
+            for (let i = 0; i <= stackConfig.maxSize - 1; i++) {
+                if (stack.array[i] !== null) {
+                    const x = stackConfig.startX + i * stackConfig.cellWidth;
+                    ctx.fillStyle = '#2ecc71';
+                    ctx.fillRect(x, stackConfig.startY, stackConfig.cellWidth, stackConfig.cellHeight);
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, stackConfig.startY, stackConfig.cellWidth, stackConfig.cellHeight);
+                    ctx.fillStyle = 'white';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = '16px Arial';
+                    ctx.fillText(
+                        stack.array[i], 
+                        x + stackConfig.cellWidth/2, 
+                        stackConfig.startY + stackConfig.cellHeight/2
+                    );
+                }
+            }
+            ctx.restore();
+        }
+        
+        // Continue the animation
+        requestAnimationFrame(animate);
+    }
+    
+    // Draw the stack
+    function draw() {
+        // Clear canvas - use style width/height for calculation to match CSS size
+        ctx.clearRect(0, 0, parseInt(canvas.style.width), parseInt(canvas.style.height));
+        
+        // Draw title
+        ctx.fillStyle = '#2c3e50';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Stack Array Implementation', parseInt(canvas.style.width)/2, 30);
+        
+        // Draw array container
+        ctx.strokeStyle = '#34495e';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+            stackConfig.startX - 2, 
+            stackConfig.startY - 2, 
+            stackConfig.maxSize * stackConfig.cellWidth + 4, 
+            stackConfig.cellHeight + 4
+        );
+        
+        // Draw array indices
+        ctx.fillStyle = '#7f8c8d';
+        ctx.textAlign = 'center';
+        ctx.font = '14px Arial';
+        for (let i = 0; i < stackConfig.maxSize; i++) {
+            const x = stackConfig.startX + i * stackConfig.cellWidth + stackConfig.cellWidth/2;
+            ctx.fillText(i, x, stackConfig.startY + stackConfig.cellHeight + 20);
+        }
+        
+        // Draw stack elements
+        for (let i = 0; i < stackConfig.maxSize; i++) {
+            const x = stackConfig.startX + i * stackConfig.cellWidth;
+            
+            // Draw cell
+            ctx.strokeStyle = '#bdc3c7';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, stackConfig.startY, stackConfig.cellWidth, stackConfig.cellHeight);
+            
+            // If element exists, draw it
+            if (i <= stack.top) {
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillRect(x, stackConfig.startY, stackConfig.cellWidth, stackConfig.cellHeight);
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(
+                    stack.array[i], 
+                    x + stackConfig.cellWidth/2, 
+                    stackConfig.startY + stackConfig.cellHeight/2
+                );
+            }
+        }
+        
+        // Draw top pointer arrow from above
+        if (!stack.isEmpty()) {
+            const topX = stackConfig.startX + stack.top * stackConfig.cellWidth + stackConfig.cellWidth/2;
+            const arrowY = stackConfig.startY - 25;
+            
+            // Draw arrow
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.moveTo(topX, stackConfig.startY - 5);  // Point of the arrow at the top of the cell
+            ctx.lineTo(topX - 10, arrowY);  // Left side of arrow
+            ctx.lineTo(topX + 10, arrowY);  // Right side of arrow
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw TOP label
+            ctx.fillStyle = '#e74c3c';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(`TOP (${stack.top})`, topX, arrowY - 5);
+        } else {
+            // If stack is empty, show top pointer at position -1 (left of the stack)
+            const topX = stackConfig.startX - 30;
+            const arrowY = stackConfig.startY + stackConfig.cellHeight/2;
+            
+            // Draw arrow
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.moveTo(stackConfig.startX - 5, arrowY);  // Point of the arrow at the left of the stack
+            ctx.lineTo(topX, arrowY - 10);  // Top side of arrow
+            ctx.lineTo(topX, arrowY + 10);  // Bottom side of arrow
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw TOP label
+            ctx.fillStyle = '#e74c3c';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText('TOP (-1)', topX - 40, arrowY);
+        }
+        
+        // Draw legend
+        ctx.fillStyle = '#34495e';
+        ctx.textAlign = 'left';
+        ctx.font = '14px Arial';
+        ctx.fillText('LIFO: Last In, First Out', stackConfig.startX, stackConfig.startY + stackConfig.cellHeight + 45);
+    }
+    
+    // Update status display
+    function updateStatus() {
+        const topValue = stack.isEmpty() ? "-1" : stack.top;
+        statusEl.textContent = `Stack is ${stack.isEmpty() ? 'empty' : 'not empty'}. Top = ${topValue}`;
+    }
+    
+    // Show message
+    function showMessage(msg) {
+        messageEl.textContent = msg;
+        messageEl.style.opacity = 1;
+    }
+    
+    // Clear message
+    function clearMessage() {
+        messageEl.textContent = '';
+        messageEl.style.opacity = 0;
+    }
+});
+
+    </script>
+</body>
+</html>
